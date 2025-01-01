@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+      {
+        "name": "Python: Indexer",
+        "type": "python",
+        "request": "launch",
+        "program": "${workspaceFolder}/src/indexer.py",
+        "console": "integratedTerminal",
+        "python": "/Users/gianderungs/Library/Caches/pypoetry/virtualenvs/digital-assistant-helvetia-aefligen-dywbn3pB-py3.12/bin/python"
+      },
+      {
+        "name": "Python: App",
+        "type": "python",
+        "request": "launch",
+        "program": "${workspaceFolder}/src/app.py",
+        "console": "integratedTerminal",
+        "python": "/Users/gianderungs/Library/Caches/pypoetry/virtualenvs/digital-assistant-helvetia-aefligen-dywbn3pB-py3.12/bin/python"
+      }
+    ]
+  }
