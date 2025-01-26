@@ -30,16 +30,30 @@ qa = RetrievalQA.from_chain_type(
     retriever=vectorstore.as_retriever()
 )
 
+# Global variable to store chat history
+chat_history = []
+
 def qa_manager(query):
     """Single function Gradio calls to get the answer from the chain."""
-    return qa.invoke(query)
+    response = qa.invoke(query)
+    chat_history.append({"query": query, "response": response})
+    return response
+
+def get_chat_history():
+    """Function to return the chat history."""
+    return "\n".join([f"User: {entry['query']}\nBot: {entry['response']}" for entry in chat_history])
 
 if __name__ == '__main__':
-    qa_app = gr.Interface(
-        fn=qa_manager,
-        inputs=[gr.Textbox(label="What are you looking for?")],
-        outputs=[gr.Textbox(label="Answer")],
-        title="Aefligen t",
-        description="Ask questions about Aefligen's website content."
-    )
+    with gr.Blocks() as qa_app:
+        with gr.Row():
+            with gr.Column():
+                query_input = gr.Textbox(label="What are you looking for?")
+                response_output = gr.Textbox(label="Answer")
+                query_button = gr.Button("Submit")
+            with gr.Column():
+                chat_history_output = gr.Textbox(label="Chat History", interactive=False)
+        
+        query_button.click(fn=qa_manager, inputs=query_input, outputs=response_output)
+        query_button.click(fn=get_chat_history, inputs=None, outputs=chat_history_output)
+        
     qa_app.launch()
