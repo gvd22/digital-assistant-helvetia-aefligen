@@ -6,13 +6,19 @@ authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 requests = "^2.32.3"
 html2text = "^2024.2.26"
 beautifulsoup4 = "^4.12.3"
 pypdf2 = "^3.0.1"
 pypdf = "^5.1.0"
 markdownify = "^0.14.1"
+python-dotenv = "^1.0.1"
+pinecone = "^5.4.2"
+langchain-openai = "^0.2.14"
+langchain = "^0.3.13"
+gradio = "^5.9.1"
+langchain-community = "^0.3.13"
 
 
 [build-system]
