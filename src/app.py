@@ -43,6 +43,11 @@ def get_chat_history():
     """Function to return the chat history."""
     return "\n".join([f"User: {entry['query']}\nBot: {entry['response']}" for entry in chat_history])
 
+def clear_chat_history():
+    """Clear the stored chat history."""
+    chat_history.clear()
+    return ""
+
 if __name__ == '__main__':
     with gr.Blocks() as qa_app:
         with gr.Row():
@@ -50,10 +55,12 @@ if __name__ == '__main__':
                 query_input = gr.Textbox(label="What are you looking for?")
                 response_output = gr.Textbox(label="Answer")
                 query_button = gr.Button("Submit")
+                clear_button = gr.Button("Clear History")
             with gr.Column():
                 chat_history_output = gr.Textbox(label="Chat History", interactive=False)
-        
+
         query_button.click(fn=qa_manager, inputs=query_input, outputs=response_output)
         query_button.click(fn=get_chat_history, inputs=None, outputs=chat_history_output)
+        clear_button.click(fn=clear_chat_history, inputs=None, outputs=chat_history_output)
         
     qa_app.launch()
