@@ -1,15 +1,11 @@
-FROM python:3.11-slim
+FROM python:3.8-slim
 
 # Set the working directory
 WORKDIR /usr/src/app
 
-# Install Poetry
-RUN pip install --no-cache-dir poetry
-
-# Copy dependency files and install
-COPY pyproject.toml poetry.lock* ./
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi
+# Copy the requirements file and install dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
 COPY . .
