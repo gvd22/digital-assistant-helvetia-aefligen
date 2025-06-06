@@ -12,7 +12,7 @@ from uuid import uuid4
 
 # Pinecone + Embeddings
 from pinecone import Pinecone, ServerlessSpec
-from langchain_openai import OpenAIEmbeddings
+from langchain_mistralai import MistralAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
 
 # LangChain core
@@ -22,7 +22,11 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 # --- Load environment variables from .env ---
 load_dotenv()
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
+if not MISTRAL_API_KEY:
+    raise RuntimeError("Missing MISTRAL_API_KEY")
+if not PINECONE_API_KEY:
+    raise RuntimeError("Missing PINECONE_API_KEY")
 
 # --- Pinecone index setup ---
 pc = Pinecone(api_key=PINECONE_API_KEY)
@@ -40,7 +44,7 @@ if index_name not in existing_indexes:
 index = pc.Index(index_name)
 
 # --- Embeddings & VectorStore ---
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+embeddings = MistralAIEmbeddings(api_key=MISTRAL_API_KEY)
 vector_store = PineconeVectorStore(index=index, embedding=embeddings)
 
 # --- Crawler configuration ---

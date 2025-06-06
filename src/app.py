@@ -1,26 +1,29 @@
 import os
 from dotenv import load_dotenv
 import gradio as gr
-from langchain_community.embeddings import OpenAIEmbeddings
-from langchain_openai import ChatOpenAI
+from langchain_mistralai import ChatMistralAI, MistralAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from langchain.chains import RetrievalQA
 
 load_dotenv()
 
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-llm_model = "gpt-4o"
+MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
+if not MISTRAL_API_KEY:
+    raise RuntimeError("Missing MISTRAL_API_KEY")
+if not PINECONE_API_KEY:
+    raise RuntimeError("Missing PINECONE_API_KEY")
+llm_model = "mistral-large-latest"
 PINECONE_INDEX = "helvetia-aefligen-dev"
 
 # Initialize embeddings + vector store
-embedding_model = "text-embedding-3-large"
-embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY, model=embedding_model)
+embedding_model = "mistral-embed"
+embeddings = MistralAIEmbeddings(api_key=MISTRAL_API_KEY, model=embedding_model)
 vectorstore = PineconeVectorStore(index_name=PINECONE_INDEX, embedding=embeddings)
 
 # Build LLM
-llm = ChatOpenAI(
-    openai_api_key=OPENAI_API_KEY,
+llm = ChatMistralAI(
+    api_key=MISTRAL_API_KEY,
     model_name=llm_model,
 )
 
