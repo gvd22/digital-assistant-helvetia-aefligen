@@ -11,7 +11,7 @@ load_dotenv()
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 llm_model = "gpt-4o"
-PINECONE_INDEX = "helvetia-aefligen-dev"
+PINECONE_INDEX = os.getenv("PINECONE_INDEX", "helvetia-aefligen-dev")
 
 # Initialize embeddings + vector store
 embedding_model = "text-embedding-3-large"
