@@ -12,7 +12,7 @@ from uuid import uuid4
 
 # Pinecone + Embeddings
 from pinecone import Pinecone, ServerlessSpec
-from langchain_openai import OpenAIEmbeddings
+from langchain_mistralai import MistralAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
 
 # LangChain core
@@ -22,25 +22,29 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 # --- Load environment variables from .env ---
 load_dotenv()
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
+if not MISTRAL_API_KEY:
+    raise RuntimeError("Missing MISTRAL_API_KEY")
+if not PINECONE_API_KEY:
+    raise RuntimeError("Missing PINECONE_API_KEY")
+INDEX_NAME = os.getenv("PINECONE_INDEX", "helvetia-aefligen-dev")
 
 # --- Pinecone index setup ---
 pc = Pinecone(api_key=PINECONE_API_KEY)
-index_name = "helvetia-aefligen-dev"
 existing_indexes = [idx["name"] for idx in pc.list_indexes()]
-if index_name not in existing_indexes:
+if INDEX_NAME not in existing_indexes:
     pc.create_index(
-        name=index_name,
+        name=INDEX_NAME,
         dimension=3072,
         metric="cosine",
         spec=ServerlessSpec(cloud="aws", region="us-east-1"),
     )
-    while not pc.describe_index(index_name).status["ready"]:
+    while not pc.describe_index(INDEX_NAME).status["ready"]:
         time.sleep(1)
-index = pc.Index(index_name)
+index = pc.Index(INDEX_NAME)
 
 # --- Embeddings & VectorStore ---
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+embeddings = MistralAIEmbeddings(api_key=MISTRAL_API_KEY)
 vector_store = PineconeVectorStore(index=index, embedding=embeddings)
 
 # --- Crawler configuration ---

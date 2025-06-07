@@ -2,8 +2,14 @@ version: '3'
 services:
   chatbot:
     build: .
+    command: python src/app.py
     ports:
       - "5000:5000"
+    env_file:
+      - ./src/.env
+
   indexer:
     build: .
-    command: python indexer.py
+    command: python src/indexer.py
+    env_file:
+      - ./src/.env
